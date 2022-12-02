@@ -119,4 +119,4 @@ def get_social_advantages():
 
 
 if __name__ == "__main__":
-    get_all_reviews(n_pages=14)
+    get_all_reviews()
