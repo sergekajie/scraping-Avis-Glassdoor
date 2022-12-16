@@ -1,4 +1,7 @@
-
+"""
+Sentiment analysis of general appreciation using transformers.
+You can also use textblob
+"""
 
 from transformers import AutoTokenizer, AutoModelForSequenceClassification
 from transformers import pipeline
@@ -8,8 +11,6 @@ tokenizer = AutoTokenizer.from_pretrained("flaubert/flaubert_small_cased")
 nlp = pipeline("sentiment-analysis", model=loaded_model, tokenizer=tokenizer)
 
 
-import textblob
-from textblob_fr import PatternTagger, PatternAnalyzer
 
 
 def get_sentiment(appreciation):
@@ -21,31 +22,33 @@ def get_sentiment(appreciation):
     return results[0].get('label')
 
 
+# import textblob
+# from textblob_fr import PatternTagger, PatternAnalyzer
 
-def appreciation_processing_with_textblob(df_reviews):
-    """
+# def appreciation_processing_with_textblob(df_reviews):
+#     """
 
-    :param df_reviews:
-    :return:
-    """
-    def get_popularity(text):
-        return textblob.TextBlob(text=text, pos_tagger=PatternTagger(), analyzer=PatternAnalyzer()).sentiment[0]
+#     :param df_reviews:
+#     :return:
+#     """
+#     def get_popularity(text):
+#         return textblob.TextBlob(text=text, pos_tagger=PatternTagger(), analyzer=PatternAnalyzer()).sentiment[0]
 
-    def get_subjectivity(text):
-        return textblob.TextBlob(text=text, pos_tagger=PatternTagger(), analyzer=PatternAnalyzer()).sentiment[1]
+#     def get_subjectivity(text):
+#         return textblob.TextBlob(text=text, pos_tagger=PatternTagger(), analyzer=PatternAnalyzer()).sentiment[1]
 
-    df_reviews["sentiment_polarity"] = df_reviews["appreciation_generale"].apply(get_popularity)
-    df_reviews["sentiment_subjectivity"] = df_reviews["appreciation_generale"].apply(get_subjectivity)
+#     df_reviews["sentiment_polarity"] = df_reviews["appreciation_generale"].apply(get_popularity)
+#     df_reviews["sentiment_subjectivity"] = df_reviews["appreciation_generale"].apply(get_subjectivity)
 
-    # manual correction
-    positive_words = ["good", "proximité", "épanouir", "bien", "format", "positif", "motivant", "top", "dynamique"]
-    df_reviews.loc[df_reviews.sentiment_polarity==0, "positif"] = df_reviews.appreciation_generale.apply(lambda text: any([word in text.lower() for word in positive_words]))
+#     # manual correction
+#     positive_words = ["good", "proximité", "épanouir", "bien", "format", "positif", "motivant", "top", "dynamique"]
+#     df_reviews.loc[df_reviews.sentiment_polarity==0, "positif"] = df_reviews.appreciation_generale.apply(lambda text: any([word in text.lower() for word in positive_words]))
 
-    df_reviews["sentiment_class"] = df_reviews["sentiment_polarity"].apply(lambda sent:
-                                                                             "positif"
-                                                                             if sent > 0
-                                                                             else ("négatif" if sent < 0 else "neutre")
-                                                                             )
+#     df_reviews["sentiment_class"] = df_reviews["sentiment_polarity"].apply(lambda sent:
+#                                                                              "positif"
+#                                                                              if sent > 0
+#                                                                              else ("négatif" if sent < 0 else "neutre")
+#                                                                              )
 
-    return df_reviews
+#     return df_reviews
 

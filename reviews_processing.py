@@ -1,15 +1,13 @@
-# https://linogaliana-teaching.netlify.app/lda/
-# import numpy as np
+
 import pandas as pd
 import position_mapping
-import sentiment_classification
 import re
 import warnings
+import config
+import sentiment_classification
 
 warnings.filterwarnings("ignore")
-
-# # load datasets
-# df_reviews = pd.read_excel("data/reviews_data.xlsx")
+logger = config.get_logger("main")
 
 
 def statut_processing(df_reviews):
@@ -69,62 +67,30 @@ def cons_processing(df_reviews):
 
     return df_reviews
 
-# # from spacy.lang.fr import French
-# from spacy.lang.fr.stop_words import STOP_WORDS
-# import spacy
-# from nltk import ngrams
-# from collections import Counter
-# import re
-# from nltk.stem.snowball import SnowballStemmer
 
-# stemmer = SnowballStemmer(language='french')
-
-# # nlp = French()
-# nlp = spacy.load("fr_core_news_sm")
-# #
-# # text = "Le Maroc et l’Espagne seront face à face mardi 6 décembre dans l'après-midi en huitièmes " \
-# #        "de finale de la Coupe du monde. Encore un match à forte dimension politique. Pour des tas de " \
-# #        "raisons. C’est sans doute le match le plus politique de ces huitièmes de finale."
-# # text = "Organisation hiérarchique orientée résultat au détriment de l’évolution et de la progression"
-
-
-# # def text_processing(text):
-
-# #     doc = nlp(text)
-# #     # lemmatization
-# #     # lems = [tok.lemma_ for tok in doc if tok.text not in STOP_WORDS and tok.pos_ in ["NOUN", "ADJ", "ADV", "VERB"]]
-# #     lems = [stemmer.stem(str(tok.text)) for tok in doc if tok.text not in STOP_WORDS and tok.pos_ in ["NOUN", "ADJ", "ADV", "VERB"]]
-# #     # lems = [tok.text for tok in doc if tok.text not in STOP_WORDS and tok.pos_ in ["NOUN", "ADJ", "ADV", "VERB"]]
-# #     # pos tagging
-# #     return lems
-
-# # def pros_cons_processing(df_reviews, n_grams=2):
-# #     df_reviews["pros_lems"] = df_reviews["pros_rec"].apply(lambda pros: [" ".join(text_processing(pro)) for pro in pros])
-# #     df_reviews["cons_lems"] = df_reviews["cons_rec"].apply(lambda cons: [text_processing(con) for con in cons])
-
-# #     df_reviews["pros_lems_grams"] = df_reviews["pros_lems"].apply(lambda pros: [" ".join(list(i)) for i in ngrams(pros, n_grams)])
-# #     df_reviews["cons_lems_grams"] = df_reviews["cons_lems"].apply(lambda cons: [list(i) for i in ngrams(cons, n_grams)])
-
-# #     pros_grams = [" ".join(isub)  for i in  df_reviews["cons_lems_grams"] for isub in i]
-# #     pros_grams = [" ".join(isub)  for i in  df_reviews["cons_lems"] for isub in i]
-
-# #     for i in Counter(pros_grams).most_common(): print(i)
-
-
-def processing_reviews():
+def reviews_processing(logger=logger):
 
     ### Extract ###
-    df_reviews = pd.read_excel("data/reviews_data.xlsx")
+    logger.info("Reading reviews scrapped")
+    df_reviews = pd.read_excel(config.output_reviews_path)
 
     ### Transform ###
+    logger.info("Statut processing")
     df_reviews = statut_processing(df_reviews)
+
+    logger.info("Position processing")
     df_reviews = position_processing(df_reviews)
+
+    logger.info("Location processing")
     df_reviews = location_processing(df_reviews)
+
+    logger.info("Appreciation processing")
     df_reviews = appreciation_processing(df_reviews)
 
     ### Load Data ###
-    df_reviews.to_excel("data/df_reviews_processed.xlsx", index=False)
+    logger.info("Saving processed reviews")
+    df_reviews.to_excel(config.output_processed_reviews_path, index=False)
 
 
 if __name__ == "__main__":
-    processing_reviews()
+    reviews_processing()

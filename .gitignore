@@ -1,5 +1,4 @@
-/data
+# /data
 /venv
 /.idea/
-
 /__pycache__/
