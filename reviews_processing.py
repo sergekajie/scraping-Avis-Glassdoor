@@ -81,14 +81,14 @@ def reviews_processing(logger=logger):
     logger.info("Position processing")
     df_reviews = position_processing(df_reviews)
 
-    logger.info("Location processing")
-    df_reviews = location_processing(df_reviews)
+    # logger.info("Location processing")
+    # df_reviews = location_processing(df_reviews)
 
     logger.info("Appreciation processing")
     df_reviews = appreciation_processing(df_reviews)
 
     ### Load Data ###
-    logger.info("Saving processed reviews")
+    logger.info(f"Saving {len(df_reviews)} processed reviews")
     df_reviews.to_excel(config.output_processed_reviews_path, index=False)
 
 
