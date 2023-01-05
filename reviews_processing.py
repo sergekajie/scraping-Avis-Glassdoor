@@ -81,8 +81,8 @@ def reviews_processing(logger=logger):
     logger.info("Position processing")
     df_reviews = position_processing(df_reviews)
 
-    # logger.info("Location processing")
-    # df_reviews = location_processing(df_reviews)
+    logger.info("Location processing")
+    df_reviews = location_processing(df_reviews)
 
     logger.info("Appreciation processing")
     df_reviews = appreciation_processing(df_reviews)

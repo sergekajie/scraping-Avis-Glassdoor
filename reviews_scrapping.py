@@ -49,7 +49,7 @@ def get_reviews(soup_data):
     note = [note.text for note in soup_data.findAll("span", {"class": "ratingNumber mr-xsm"})]
     statut = [statut.text for statut in soup_data.findAll("span", {"class": "pt-xsm pt-md-0 css-1qxtz39 eg4psks0"})]
     appreciation_generale = [app.text for app in soup_data.findAll("a", {"class": "reviewLink"})]
-    date_and_positions = get_date_position(soup_data)
+    date_and_positions, locations = get_date_position_location(soup_data)
     recommandations = get_recommandations(soup_data)
     pros = [advantage.text for advantage in soup_data.findAll("span", {"data-test": "pros"})]
     cons = [disadvantage.text for disadvantage in soup_data.findAll("span", {"data-test": "cons"})]
@@ -59,6 +59,7 @@ def get_reviews(soup_data):
         "statut": statut,
         "appreciation_generale": appreciation_generale,
         "date_and_positions": date_and_positions,
+        "location": locations,
         "recommandations": recommandations,
         "pros": pros,
         "cons": cons
@@ -86,15 +87,15 @@ def get_reviews(soup_data):
     return reviews_data
 
 
-def get_date_position(soup_data):
+def get_date_position_location(soup_data):
     """
     :param soup_data: html content parsed
     :return: date of the review and location of the person who wrote the post
     """
     poste_date_and_location = soup_data.findAll("span", {"class": "common__EiReviewDetailsStyle__newUiJobLine"})
     possitions_and_date = [poste.findAll('span', {"class": "authorJobTitle middle common__EiReviewDetailsStyle__newGrey"})[0].text for poste in poste_date_and_location]
-
-    return possitions_and_date
+    locations = [loc.find("span", {"class": "authorLocation"}).text if loc.find("span", {"class": "authorLocation"}) is not None else None for loc in poste_date_and_location]
+    return possitions_and_date, locations
 
 
 def get_recommandations(soup_data):
